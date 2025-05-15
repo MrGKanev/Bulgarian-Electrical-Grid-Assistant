@@ -1,3 +1,6 @@
+"""Config flow for ERP Power Interruption Monitor integration."""
+import voluptuous as vol
+
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -24,6 +27,11 @@ class ERPPowerInterruptionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors[CONF_ADDRESSES] = "no_addresses"
             
             if not errors:
+                # Process addresses string to list
+                if CONF_ADDRESSES in user_input and isinstance(user_input[CONF_ADDRESSES], str):
+                    addresses = [addr.strip() for addr in user_input[CONF_ADDRESSES].split(",")]
+                    user_input[CONF_ADDRESSES] = addresses
+                
                 # Create entry
                 return self.async_create_entry(
                     title="ERP Power Interruption Monitor",
