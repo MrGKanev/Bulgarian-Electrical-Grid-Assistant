@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ERP Power Interruption Monitor",
+        "description": "Set up monitoring for power interruptions affecting your address",
+        "data": {
+          "addresses": "Your addresses (comma separated)",
+          "scan_interval": "Check interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "no_addresses": "At least one address must be specified"
+    },
+    "abort": {
+      "already_configured": "This integration is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ERP Power Interruption Options",
+        "description": "Update your monitored addresses and scan interval",
+        "data": {
+          "addresses": "Your addresses (comma separated)",
+          "scan_interval": "Check interval (seconds)"
+        }
+      }
+    }
+  }
+}

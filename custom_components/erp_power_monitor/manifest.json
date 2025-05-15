@@ -1,0 +1,15 @@
+{
+  "domain": "bulgarian_electrical_grid_assistant",
+  "name": "Bulgarian Electrical Grid Assistant",
+  "documentation": "https://github.com/MrGKanev/Bulgarian-Electrical-Grid-Assistant",
+  "dependencies": [],
+  "codeowners": [
+    "@mrgkanev"
+  ],
+  "requirements": [
+    "beautifulsoup4>=4.9.0"
+  ],
+  "config_flow": true,
+  "version": "0.1.0",
+  "iot_class": "cloud_polling"
+}
