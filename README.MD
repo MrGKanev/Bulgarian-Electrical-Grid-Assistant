@@ -35,7 +35,7 @@ A Home Assistant integration that monitors the Bulgaria electricity grid website
 2. Create a directory structure in your Home Assistant configuration folder:
 
    ```
-   custom_components/erp_power_monitor/
+   custom_components/bulgarian_electrical_grid_assistant/
    ```
 
 3. Copy all files from this repository into the directory
@@ -45,7 +45,7 @@ A Home Assistant integration that monitors the Bulgaria electricity grid website
 
 1. In Home Assistant, go to **Configuration** > **Integrations**
 2. Click the "+ Add Integration" button
-3. Search for "ERP Power Interruption Monitor"
+3. Search for "Bulgarian Electrical Grid Assistant"
 4. Enter your configuration:
    - **Addresses**: Enter your street addresses, separated by commas
    - **Scan Interval**: How often to check for updates (minimum 3600 seconds/1 hour)
