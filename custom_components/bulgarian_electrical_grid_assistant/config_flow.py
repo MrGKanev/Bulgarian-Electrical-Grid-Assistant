@@ -1,19 +1,22 @@
-"""Config flow for ERP Power Interruption Monitor integration."""
+"""Config flow for Bulgarian Electrical Grid Assistant integration."""
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import callback
 from homeassistant.const import CONF_SCAN_INTERVAL
+import homeassistant.helpers.config_validation as cv
 
 from .const import (
     DOMAIN,
     CONF_ADDRESSES,
+    CONF_PROVIDERS,
     DEFAULT_SCAN_INTERVAL,
+    DEFAULT_PROVIDERS,
 )
 
 
-class ERPPowerInterruptionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for ERP Power Interruption Monitor."""
+class PowerInterruptionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Bulgarian Electrical Grid Assistant."""
 
     VERSION = 1
 
@@ -34,7 +37,7 @@ class ERPPowerInterruptionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 
                 # Create entry
                 return self.async_create_entry(
-                    title="ERP Power Interruption Monitor",
+                    title="Bulgarian Electrical Grid Assistant",
                     data=user_input,
                 )
 
@@ -45,6 +48,9 @@ class ERPPowerInterruptionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
                 ): vol.All(vol.Coerce(int), vol.Range(min=3600)),  # Minimum 1 hour
+                vol.Optional(
+                    CONF_PROVIDERS, default=DEFAULT_PROVIDERS
+                ): vol.All(cv.multi_select({"ERP": "ERP", "ERYUG": "ERYUG"})),
             }
         )
 
@@ -87,6 +93,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         scan_interval = self.config_entry.options.get(
             CONF_SCAN_INTERVAL, self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
         )
+        providers = self.config_entry.options.get(
+            CONF_PROVIDERS, self.config_entry.data.get(CONF_PROVIDERS, DEFAULT_PROVIDERS)
+        )
         
         # Convert list to comma-separated string for display
         if isinstance(addresses, list):
@@ -99,6 +108,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=scan_interval
                 ): vol.All(vol.Coerce(int), vol.Range(min=3600)),  # Minimum 1 hour
+                vol.Optional(
+                    CONF_PROVIDERS, default=providers
+                ): vol.All(cv.multi_select({"ERP": "ERP", "ERYUG": "ERYUG"})),
             }
         )
 

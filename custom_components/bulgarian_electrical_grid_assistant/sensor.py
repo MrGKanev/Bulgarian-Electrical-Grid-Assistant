@@ -1,4 +1,4 @@
-"""Sensor platform for ERP Power Interruption Monitor."""
+"""Sensor platform for Bulgarian Electrical Grid Assistant."""
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -11,6 +11,8 @@ from .const import (
     ATTR_INTERRUPTION_DATE,
     ATTR_INTERRUPTION_TIME,
     ATTR_AFFECTED_ADDRESSES,
+    ATTR_PROVIDER,
+    ATTR_TYPE,
 )
 
 
@@ -20,10 +22,10 @@ async def async_setup_entry(
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
-    async_add_entities([ERPPowerInterruptionSensor(coordinator)])
+    async_add_entities([PowerInterruptionSensor(coordinator)])
 
 
-class ERPPowerInterruptionSensor(CoordinatorEntity, SensorEntity):
+class PowerInterruptionSensor(CoordinatorEntity, SensorEntity):
     """Sensor for power interruption details."""
 
     _attr_has_entity_name = True
@@ -41,7 +43,9 @@ class ERPPowerInterruptionSensor(CoordinatorEntity, SensorEntity):
             return "No interruptions"
         
         match = self.coordinator.matched_addresses[0]  # Get first match
-        return f"Interruption on {match['date']} at {match['time']}"
+        provider = match.get("provider", "")
+        interruption_type = match.get("type", "planned")
+        return f"{provider} {interruption_type} interruption on {match['date']} at {match['time']}"
 
     @property
     def extra_state_attributes(self):
@@ -53,5 +57,7 @@ class ERPPowerInterruptionSensor(CoordinatorEntity, SensorEntity):
             attrs[ATTR_INTERRUPTION_DATE] = match["date"]
             attrs[ATTR_INTERRUPTION_TIME] = match["time"]
             attrs[ATTR_AFFECTED_ADDRESSES] = match["addresses"]
+            attrs[ATTR_PROVIDER] = match.get("provider", "")
+            attrs[ATTR_TYPE] = match.get("type", "planned")
         
         return attrs

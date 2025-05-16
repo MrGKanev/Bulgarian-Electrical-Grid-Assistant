@@ -1,4 +1,4 @@
-"""Binary sensor platform for ERP Power Interruption Monitor."""
+"""Binary sensor platform for Bulgarian Electrical Grid Assistant."""
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorDeviceClass,
@@ -14,6 +14,8 @@ from .const import (
     ATTR_MATCHED_ADDRESS,
     ATTR_INTERRUPTION_DATE,
     ATTR_INTERRUPTION_TIME,
+    ATTR_PROVIDER,
+    ATTR_TYPE,
 )
 
 
@@ -23,10 +25,10 @@ async def async_setup_entry(
     """Set up the binary sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
-    async_add_entities([ERPPowerInterruptionBinarySensor(coordinator)])
+    async_add_entities([PowerInterruptionBinarySensor(coordinator)])
 
 
-class ERPPowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
+class PowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
     """Binary sensor for power interruption detection."""
 
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
@@ -55,5 +57,7 @@ class ERPPowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
             attrs[ATTR_MATCHED_ADDRESS] = match["matched_address"]
             attrs[ATTR_INTERRUPTION_DATE] = match["date"]
             attrs[ATTR_INTERRUPTION_TIME] = match["time"]
+            attrs[ATTR_PROVIDER] = match.get("provider", "")  
+            attrs[ATTR_TYPE] = match.get("type", "planned")
         
         return attrs
