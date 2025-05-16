@@ -4,13 +4,15 @@ A Home Assistant integration that monitors the Bulgaria electricity grid website
 
 > **⚠️ BETA WARNING**: This integration is currently in beta. It may contain bugs or undergo significant changes. Use at your own risk.
 
-> **NOTE**: Currently, this integration only monitors the ERP Sever website. Support for additional power company websites may be added in future updates.
 ## Features
 
-- Daily scraping of power interruption announcements
+- Daily scraping of power interruption announcements from multiple power companies
+- Currently supports:
+  - ERP Sever (planned interruptions)
+  - ERYug (both planned and unplanned interruptions)
 - Monitors multiple addresses (add as many as you need)
 - Binary sensor that turns ON when your address is affected
-- Detailed sensor showing interruption date and time
+- Detailed sensor showing interruption date, time, and provider
 - Compatible with Home Assistant notifications
 
 ## Installation
@@ -47,6 +49,7 @@ A Home Assistant integration that monitors the Bulgaria electricity grid website
 4. Enter your configuration:
    - **Addresses**: Enter your street addresses, separated by commas
    - **Scan Interval**: How often to check for updates (minimum 3600 seconds/1 hour)
+   - **Providers**: Select which power companies to monitor (ERP and/or ERYug)
 
 ### Configuration Options
 
@@ -54,6 +57,7 @@ A Home Assistant integration that monitors the Bulgaria electricity grid website
 |--------|-------------|---------|
 | Addresses | Comma-separated list of your addresses to monitor | Required |
 | Scan Interval | Interval in seconds between checks | 86400 (24 hours) |
+| Providers | Which power companies to monitor | All providers enabled |
 
 ## Usage
 
@@ -65,6 +69,8 @@ After installation, the integration creates two entities:
      - `matched_address`: Which of your addresses matched
      - `interruption_date`: Date of the scheduled interruption
      - `interruption_time`: Time of the scheduled interruption
+     - `provider`: Which power company reported the interruption
+     - `type`: Type of interruption (planned/unplanned)
 
 2. **Sensor**: `sensor.power_interruption_details`
    - State: Shows a summary of the interruption
@@ -72,6 +78,8 @@ After installation, the integration creates two entities:
      - `interruption_date`: Date of the scheduled interruption
      - `interruption_time`: Time of the scheduled interruption
      - `affected_addresses`: List of all affected addresses
+     - `provider`: Which power company reported the interruption
+     - `type`: Type of interruption (planned/unplanned)
 
 ## Setting Up Notifications
 
@@ -91,7 +99,7 @@ To receive notifications when a power interruption is scheduled for your address
 
      ```yaml
      title: "Power Interruption Alert!"
-     message: "Power interruption scheduled for {{ state_attr('binary_sensor.power_interruption_alert', 'matched_address') }} on {{ state_attr('binary_sensor.power_interruption_alert', 'interruption_date') }} at {{ state_attr('binary_sensor.power_interruption_alert', 'interruption_time') }}"
+     message: "Power interruption scheduled for {{ state_attr('binary_sensor.power_interruption_alert', 'matched_address') }} on {{ state_attr('binary_sensor.power_interruption_alert', 'interruption_date') }} at {{ state_attr('binary_sensor.power_interruption_alert', 'interruption_time') }} by {{ state_attr('binary_sensor.power_interruption_alert', 'provider') }}"
      ```
 
 ## Troubleshooting
@@ -102,6 +110,7 @@ If the integration isn't working as expected:
 - Verify your addresses match the format used on the website
 - Try adding partial street names if full addresses don't match
 - Make sure the integration has internet access
+- Check that you've selected the correct providers for your region
 
 ## License
 
