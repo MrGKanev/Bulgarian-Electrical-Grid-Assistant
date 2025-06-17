@@ -39,24 +39,31 @@ class PowerInterruptionSensor(CoordinatorEntity, SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        if not self.coordinator.data or not self.coordinator.data["matched"]:
+        if (not self.coordinator.data or 
+            not self.coordinator.data.get("matched") or 
+            not self.coordinator.matched_addresses):
             return "No interruptions"
         
         match = self.coordinator.matched_addresses[0]  # Get first match
         provider = match.get("provider", "")
         interruption_type = match.get("type", "planned")
-        return f"{provider} {interruption_type} interruption on {match['date']} at {match['time']}"
+        date = match.get("date", "Unknown date")
+        time = match.get("time", "Unknown time")
+        
+        return f"{provider} {interruption_type} interruption on {date} at {time}"
 
     @property
     def extra_state_attributes(self):
         """Return device specific state attributes."""
         attrs = {}
         
-        if self.coordinator.data and self.coordinator.matched_addresses:
+        if (self.coordinator.data and 
+            self.coordinator.data.get("matched") and 
+            self.coordinator.matched_addresses):
             match = self.coordinator.matched_addresses[0]  # Get first match
-            attrs[ATTR_INTERRUPTION_DATE] = match["date"]
-            attrs[ATTR_INTERRUPTION_TIME] = match["time"]
-            attrs[ATTR_AFFECTED_ADDRESSES] = match["addresses"]
+            attrs[ATTR_INTERRUPTION_DATE] = match.get("date", "Unknown")
+            attrs[ATTR_INTERRUPTION_TIME] = match.get("time", "Unknown")
+            attrs[ATTR_AFFECTED_ADDRESSES] = match.get("addresses", [])
             attrs[ATTR_PROVIDER] = match.get("provider", "")
             attrs[ATTR_TYPE] = match.get("type", "planned")
         

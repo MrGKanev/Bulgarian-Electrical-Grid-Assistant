@@ -43,7 +43,7 @@ class PowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def is_on(self):
         """Return True if there's a power interruption scheduled for the configured address."""
-        if not self.coordinator.data:
+        if not self.coordinator.data or not self.coordinator.data.get("matched"):
             return False
         return len(self.coordinator.data["matched"]) > 0
 
@@ -52,11 +52,13 @@ class PowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Return device specific state attributes."""
         attrs = {}
         
-        if self.is_on and self.coordinator.matched_addresses:
+        if (self.is_on and 
+            self.coordinator.matched_addresses and 
+            len(self.coordinator.matched_addresses) > 0):
             match = self.coordinator.matched_addresses[0]  # Get first match
-            attrs[ATTR_MATCHED_ADDRESS] = match["matched_address"]
-            attrs[ATTR_INTERRUPTION_DATE] = match["date"]
-            attrs[ATTR_INTERRUPTION_TIME] = match["time"]
+            attrs[ATTR_MATCHED_ADDRESS] = match.get("matched_address", "")
+            attrs[ATTR_INTERRUPTION_DATE] = match.get("date", "Unknown")
+            attrs[ATTR_INTERRUPTION_TIME] = match.get("time", "Unknown")
             attrs[ATTR_PROVIDER] = match.get("provider", "")  
             attrs[ATTR_TYPE] = match.get("type", "planned")
         
