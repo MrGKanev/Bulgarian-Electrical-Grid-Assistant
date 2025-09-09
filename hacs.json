@@ -1,0 +1,9 @@
+{
+  "name": "Bulgarian Electrical Grid Assistant",
+  "render_readme": true,
+  "title": "Bulgarian Electrical Grid Assistant",
+  "type": "integration",
+  "domains": [
+    "bulgarian_electrical_grid_assistant"
+  ]
+}
