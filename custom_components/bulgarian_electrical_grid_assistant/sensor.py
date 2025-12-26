@@ -20,9 +20,14 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    
+    coordinator = entry.runtime_data
+
     async_add_entities([PowerInterruptionSensor(coordinator)])
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload sensor entities."""
+    return True
 
 
 class PowerInterruptionSensor(CoordinatorEntity, SensorEntity):

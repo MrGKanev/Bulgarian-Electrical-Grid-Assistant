@@ -8,7 +8,7 @@ from typing import List, Dict, Any, Optional
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SCAN_INTERVAL, Platform
 
 from .const import (
     DOMAIN,
@@ -20,6 +20,9 @@ from .const import (
 from .crawlers import ERPCrawler, ERYUGCrawler
 
 _LOGGER = logging.getLogger(__name__)
+
+# Platforms supported by this integration
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
 class PowerInterruptionDataCoordinator(DataUpdateCoordinator):
     """Class to manage fetching power interruption data from multiple providers."""
@@ -321,5 +324,59 @@ class PowerInterruptionDataCoordinator(DataUpdateCoordinator):
         # Validate type
         if interruption.get('type') not in ['planned', 'unplanned']:
             return False
-        
+
         return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Bulgarian Electrical Grid Assistant from a config entry."""
+
+    # Get configuration from entry data and options (options override data)
+    scan_interval = timedelta(
+        seconds=entry.options.get(
+            CONF_SCAN_INTERVAL,
+            entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        )
+    )
+    addresses = entry.options.get(
+        CONF_ADDRESSES,
+        entry.data.get(CONF_ADDRESSES, [])
+    )
+    providers = entry.options.get(
+        CONF_PROVIDERS,
+        entry.data.get(CONF_PROVIDERS, DEFAULT_PROVIDERS)
+    )
+
+    # Create the coordinator
+    coordinator = PowerInterruptionDataCoordinator(
+        hass=hass,
+        logger=_LOGGER,
+        addresses=addresses,
+        providers=providers,
+        update_interval=scan_interval,
+    )
+
+    # Fetch initial data
+    await coordinator.async_config_entry_first_refresh()
+
+    # Store coordinator in runtime_data (modern HA pattern)
+    entry.runtime_data = coordinator
+
+    # Forward setup to platforms
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Setup listener for config updates
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    # Unload platforms
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload config entry when options change."""
+    await hass.config_entries.async_reload(entry.entry_id)

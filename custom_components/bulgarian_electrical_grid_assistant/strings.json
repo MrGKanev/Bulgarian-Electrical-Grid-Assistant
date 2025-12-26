@@ -1,0 +1,47 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ERP Power Interruption Monitor",
+        "description": "Set up monitoring for power interruptions affecting your address",
+        "data": {
+          "addresses": "Your addresses (comma separated)",
+          "scan_interval": "Check interval (seconds)",
+          "providers": "Power companies to monitor"
+        }
+      }
+    },
+    "error": {
+      "no_addresses": "At least one address must be specified",
+      "invalid_addresses": "One or more addresses are not in valid Bulgarian format",
+      "no_providers": "At least one power provider must be selected",
+      "invalid_providers": "Invalid power provider selection",
+      "scan_interval_too_short": "Scan interval must be at least 1 hour (3600 seconds)",
+      "unknown_error": "An unexpected error occurred. Please try again."
+    },
+    "abort": {
+      "already_configured": "This integration is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ERP Power Interruption Options",
+        "description": "Update your monitored addresses and scan interval",
+        "data": {
+          "addresses": "Your addresses (comma separated)",
+          "scan_interval": "Check interval (seconds)",
+          "providers": "Power companies to monitor"
+        }
+      }
+    },
+    "error": {
+      "no_addresses": "At least one address must be specified",
+      "invalid_addresses": "One or more addresses are not in valid Bulgarian format",
+      "no_providers": "At least one power provider must be selected",
+      "invalid_providers": "Invalid power provider selection",
+      "scan_interval_too_short": "Scan interval must be at least 1 hour (3600 seconds)",
+      "unknown_error": "An unexpected error occurred. Please try again."
+    }
+  }
+}
