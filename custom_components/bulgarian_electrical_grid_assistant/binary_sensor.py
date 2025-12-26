@@ -23,8 +23,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the binary sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    
+    coordinator = entry.runtime_data
+
     async_add_entities([PowerInterruptionBinarySensor(coordinator)])
 
 
