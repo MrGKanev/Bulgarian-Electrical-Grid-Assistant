@@ -25,11 +25,6 @@ async def async_setup_entry(
     async_add_entities([PowerInterruptionSensor(coordinator)])
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload sensor entities."""
-    return True
-
-
 class PowerInterruptionSensor(CoordinatorEntity, SensorEntity):
     """Sensor for power interruption details."""
 

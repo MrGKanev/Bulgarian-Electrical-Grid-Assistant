@@ -28,11 +28,6 @@ async def async_setup_entry(
     async_add_entities([PowerInterruptionBinarySensor(coordinator)])
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload binary sensor entities."""
-    return True
-
-
 class PowerInterruptionBinarySensor(CoordinatorEntity, BinarySensorEntity):
     """Binary sensor for power interruption detection."""
 
